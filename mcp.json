@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "scale-mcp-server": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/absolute-path/ibm-storage-scale-mcp-server",
+        "run",
+        "scale-mcp-server",
+        "--transport",
+        "stdio"
+      ]
+    }
+  }
+}

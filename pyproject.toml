@@ -1,0 +1,17 @@
+[project]
+name = "scale-mcp-server"
+version = "1.0.0"
+description = "IBM Storage Scale MCP server"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+ "fastmcp>=2.13.1",
+ "mcp>=1.22.0",
+]
+
+[build-system]
+requires = [ "uv_build>=0.8.22,<0.9.0",]
+build-backend = "uv_build"
+
+[project.scripts]
+scale-mcp-server = "scale_mcp_server:main"

@@ -103,6 +103,10 @@ Follow the [setup instructions](https://github.com/modelcontextprotocol/inspecto
    - You can browse available tools
    - Test tool calls and verify responses
 
+## Using with Agents
+
+For a higher-level conversational interface, consider using the [IBM Storage Scale Agents](https://github.com/IBM/ibm-storage-scale-agents) which are built on top of this MCP server. The agents provide an intuitive way to manage IBM Storage Scale operations through natural language interactions.
+
 ## Reporting Issues and Feedback
 
 For issues, questions, or feature requests, please open an issue in the repository.

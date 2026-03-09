@@ -9,6 +9,7 @@ logger = get_logger(__name__)
 
 class StorageScaleAPIError(Exception):
     """Exception raised for Storage Scale API errors."""
+
     pass
 
 

@@ -12,7 +12,7 @@ from scale_mcp_server.adapters.fileops import get_fileops_client
 # Create the file operations MCP server
 mcp = FastMCP(
     "fileops",
-    instructions="File and directory operations via external MCP server"
+    instructions="File and directory operations"
 )
 
 

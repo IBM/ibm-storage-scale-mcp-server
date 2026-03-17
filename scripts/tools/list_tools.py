@@ -18,7 +18,7 @@ from typing import Any
 try:
     from fastmcp.client import Client
     from fastmcp.client.transports.stdio import StdioTransport
-    from fastmcp.client.transports.sse import SSETransport
+    from fastmcp.client.transports.http import StreamableHttpTransport
 except ImportError:
     print("Error: fastmcp package not found. Install it with: pip install fastmcp")
     sys.exit(1)
@@ -69,7 +69,7 @@ async def list_tools_stdio(filesystem_paths: list[str] | None = None) -> list[di
 
 
 async def list_tools_http(host: str = "127.0.0.1", port: int = 8000) -> list[dict[str, Any]]:
-    """Connect to MCP server via HTTP/SSE and list all tools.
+    """Connect to MCP server via HTTP and list all tools.
     
     Args:
         host: Server host address
@@ -78,9 +78,8 @@ async def list_tools_http(host: str = "127.0.0.1", port: int = 8000) -> list[dic
     Returns:
         List of tool information dictionaries
     """
-    # Create SSE transport
-    url = f"http://{host}:{port}"
-    transport = SSETransport(url)
+    url = f"http://{host}:{port}/mcp"
+    transport = StreamableHttpTransport(url)
     
     tools = []
     
@@ -260,7 +259,7 @@ For HTTP, start the server first:
                 print(f"Including filesystem tools for paths: {', '.join(args.filesystem_paths)}\n")
             tools = await list_tools_stdio(args.filesystem_paths)
         else:
-            print(f"Connecting to MCP server at http://{args.host}:{args.port}...\n")
+            print(f"Connecting to MCP server at http://{args.host}:{args.port}/mcp...\n")
             tools = await list_tools_http(args.host, args.port)
         
         # Output based on format

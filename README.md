@@ -11,6 +11,11 @@ Model Context Protocol (MCP) server for interacting with IBM Storage Scale.
 
 - Python 3.12 or later
 - UV package manager (`curl -LsSf https://astral.sh/uv/install.sh | sh`)
+- Node.js 22 and npx (optional, for file operations support)
+  ```bash
+  curl -fsSL https://rpm.nodesource.com/setup_22.x | sudo bash -
+  sudo yum install -y nsolid
+  ```
 
 ### Installation
 
@@ -72,6 +77,25 @@ scale-mcp-server --transport stdio
 
 # Run with custom host, port, and log level
 scale-mcp-server --transport http --host 0.0.0.0 --port 3000 --log-level DEBUG
+```
+
+## Third-Party Integrations
+
+The server supports optional third-party MCP server integrations to extend functionality beyond IBM Storage Scale management.
+
+### File Operations
+
+The server can optionally mount the [MCP filesystem server](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem) to provide local file operations alongside IBM Storage Scale management. This enables:
+
+- Reading and writing files
+- Creating and listing directories
+- Moving files and directories
+- Searching files with patterns
+- Getting file metadata
+
+**Usage:**
+```bash
+scale-mcp-server --transport http --filesystem-paths /path/to/dir1 /path/to/dir2
 ```
 
 ## Usage and Integration

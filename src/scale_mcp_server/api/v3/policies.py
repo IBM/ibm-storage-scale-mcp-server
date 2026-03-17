@@ -38,6 +38,7 @@ async def get_policy_api(
 async def update_policy_api(
     filesystem: str,
     policy_data: dict,
+    test_only: bool = False,
     domain: Optional[str] = None,
 ) -> Any:
     """Update policy for a filesystem.
@@ -45,6 +46,7 @@ async def update_policy_api(
     Args:
         filesystem: Filesystem name
         policy_data: Policy configuration data
+        test_only: If True, only test the policy without applying (default: False)
         domain: Domain to be authorized against (default 'StorageScaleDomain')
 
     Returns:
@@ -57,12 +59,15 @@ async def update_policy_api(
     if domain:
         headers["X-StorageScaleDomain"] = domain
 
+    params = {"test_only": str(test_only).lower()}
+
     try:
         async with StorageScaleClient() as client:
             return await client.patch(
                 f"/scalemgmt/v3/filesystems/{filesystem}/policy",
                 json=policy_data,
                 headers=headers,
+                params=params,
             )
     except StorageScaleAPIError as e:
         raise StorageScaleAPIError(

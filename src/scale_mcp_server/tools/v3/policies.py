@@ -39,31 +39,76 @@ async def get_policy(
 
 
 @mcp.tool()
-async def update_policy(
+async def test_policy(
     ctx: Context,
     filesystem: str,
-    policy_data: dict,
+    policy_contents: str,
     domain: Optional[str] = None,
 ) -> Any:
-    """Update policy for a filesystem.
+    """Test IBM Storage Scale policy without applying changes.
+    
+    Validates policy syntax and shows what would be done without actually making changes.
+    Uses the Storage Scale API with test_only=true parameter.
 
     Args:
         filesystem: Filesystem name
-        policy_data: Policy configuration data
+        policy_contents: Base64-encoded policy file contents
         domain: Domain to be authorized against (default 'StorageScaleDomain')
 
     Returns:
-        Dictionary containing updated policy information
+        Dictionary containing policy test results
     """
-    await ctx.info(f"Tool called: update_policy with filesystem={filesystem}")
-    await ctx.debug(f"Updating policy for filesystem: {filesystem}")
+    await ctx.info(f"Tool called: test_policy with filesystem={filesystem}")
+    await ctx.debug(f"Testing policy for filesystem: {filesystem}")
 
     try:
+        policy_data = {"policy_contents": policy_contents}
         result = await update_policy_api(
-            filesystem=filesystem, policy_data=policy_data, domain=domain
+            filesystem=filesystem,
+            policy_data=policy_data,
+            test_only=True,
+            domain=domain
         )
-        await ctx.info(f"Policy for {filesystem} updated successfully")
+        await ctx.info(f"Policy test for {filesystem} completed successfully")
         return result
     except Exception as e:
-        await ctx.error(f"Failed to update policy for {filesystem}: {str(e)}")
+        await ctx.error(f"Failed to test policy for {filesystem}: {str(e)}")
+        raise
+
+
+@mcp.tool()
+async def apply_policy(
+    ctx: Context,
+    filesystem: str,
+    policy_contents: str,
+    domain: Optional[str] = None,
+) -> Any:
+    """Apply IBM Storage Scale policy to a filesystem.
+    
+    Applies the policy changes to the specified filesystem.
+    Uses the Storage Scale API with test_only=false parameter.
+
+    Args:
+        filesystem: Filesystem name
+        policy_contents: Base64-encoded policy file contents
+        domain: Domain to be authorized against (default 'StorageScaleDomain')
+
+    Returns:
+        Dictionary containing policy application results
+    """
+    await ctx.info(f"Tool called: apply_policy with filesystem={filesystem}")
+    await ctx.debug(f"Applying policy for filesystem: {filesystem}")
+
+    try:
+        policy_data = {"policy_contents": policy_contents}
+        result = await update_policy_api(
+            filesystem=filesystem,
+            policy_data=policy_data,
+            test_only=False,
+            domain=domain
+        )
+        await ctx.info(f"Policy for {filesystem} applied successfully")
+        return result
+    except Exception as e:
+        await ctx.error(f"Failed to apply policy for {filesystem}: {str(e)}")
         raise

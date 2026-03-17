@@ -2,6 +2,8 @@ import argparse
 from fastmcp import FastMCP
 from pathlib import Path
 from scale_mcp_server.utils.read_config import read_config, setup_logging
+from scale_mcp_server.adapters.fileops import initialize_fileops_client
+from scale_mcp_server.tools.third_party import fileops
 from scale_mcp_server.tools.v3 import (
     clusters,
     config,
@@ -42,6 +44,9 @@ Examples:
 
   # Run with custom log level
   scale-mcp-server --transport http --port 8000 --log-level DEBUG
+
+  # Run with filesystem paths for file operations
+  scale-mcp-server --transport http --filesystem-paths /data /home/user/projects
         """,
     )
 
@@ -75,6 +80,14 @@ Examples:
         help="Log level for the MCP server (default: DEBUG).",
     )
 
+    parser.add_argument(
+        "--filesystem-paths",
+        type=str,
+        nargs="+",
+        help="Allowed directory paths for filesystem operations (space-separated). "
+        "These paths will be mounted to the filesystem MCP server.",
+    )
+
     args = parser.parse_args()
 
     # Load configuration
@@ -101,6 +114,21 @@ Examples:
     # V2
     mcp.mount(nodes_health.mcp)
     mcp.mount(filesystems_health.mcp)
+
+    # Setup fileops tools if paths are provided
+    if args.filesystem_paths:
+        try:
+            # Initialize the fileops client with allowed paths
+            initialize_fileops_client(args.filesystem_paths)
+            # Mount the file operations tools
+            mcp.mount(fileops.mcp)
+            print(f"Registered file operations tools with allowed paths: {', '.join(args.filesystem_paths)}")
+            print("The file operations server supports MCP Roots protocol for dynamic directory access.")
+        except Exception as e:
+            print(f"Error: Could not setup file operations tools: {e}")
+            print("  File operations will not be available.")
+            print("  Make sure Node.js and npx are installed.")
+            raise
 
     fastmcp_config = config_data.get("fastmcp", {})
     log_level = (

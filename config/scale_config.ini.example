@@ -1,0 +1,13 @@
+[scale_api]
+hostname = your-scale-cluster.example.com
+v2_port = 443
+v3_port = 46443
+timeout = 5.0
+
+[authorization]
+username = your-username
+password = your-password
+allow_insecure = true
+
+[domain]
+domain = your-domain

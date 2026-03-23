@@ -34,6 +34,10 @@ Model Context Protocol (MCP) server for interacting with IBM Storage Scale.
 
 2. **Configure Scale connection settings**:
    
+   ```bash
+   cp config/scale_config.ini.example config/scale_config.ini
+   ```
+   
    Edit [`config/scale_config.ini`](config/scale_config.ini) with your IBM Storage Scale cluster details:
    
    ```ini

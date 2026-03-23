@@ -6,6 +6,9 @@ dist/
 wheels/
 *.egg-info
 
+# Local Scale connection (copy from scale_config.ini.example)
+config/scale_config.ini
+
 # Log files
 logs/
 

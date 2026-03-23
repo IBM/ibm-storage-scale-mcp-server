@@ -4,6 +4,7 @@ from pathlib import Path
 from scale_mcp_server.utils.read_config import read_config, setup_logging
 from scale_mcp_server.adapters.fileops import initialize_fileops_client
 from scale_mcp_server.tools.third_party import fileops
+from scale_mcp_server.tools.cli import policies as cli_policies
 from scale_mcp_server.tools.v3 import (
     clusters,
     config,
@@ -114,6 +115,8 @@ Examples:
     # V2
     mcp.mount(nodes_health.mcp)
     mcp.mount(filesystems_health.mcp)
+    # CLI tools
+    mcp.mount(cli_policies.mcp)
 
     # Setup fileops tools if paths are provided
     if args.filesystem_paths:

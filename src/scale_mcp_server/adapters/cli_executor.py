@@ -6,6 +6,9 @@ Commands are limited by the tools that use them.
 
 import subprocess
 from typing import Optional
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class CommandError(Exception):
@@ -33,10 +36,11 @@ class CommandExecutor:
             command_timeout: Maximum execution time in seconds (default: 30)
         """
         self.command_timeout = command_timeout
+        logger.debug(f"CommandExecutor initialized with timeout: {command_timeout}s")
 
-    def execute(
-        self, 
-        command: list[str], 
+    def run_command(
+        self,
+        command: list[str],
         shell: bool = False,
         cwd: Optional[str] = None
     ) -> subprocess.CompletedProcess:
@@ -48,14 +52,15 @@ class CommandExecutor:
             cwd: Working directory (optional)
             
         Returns:
-            subprocess.CompletedProcess: The result of the command execution
+            subprocess.CompletedProcess with stdout, stderr, and returncode
             
         Raises:
             CommandTimeoutError: If command exceeds timeout
             CommandExecutionError: If command execution fails
         """
         try:
-            return subprocess.run(
+            logger.info(f"Executing command: {command}")
+            result = subprocess.run(
                 command,
                 shell=shell,
                 text=True,
@@ -63,9 +68,25 @@ class CommandExecutor:
                 timeout=self.command_timeout,
                 cwd=cwd,
             )
+            
+            if result.returncode == 0:
+                logger.info(f"Command executed successfully")
+            else:
+                logger.warning(f"Command failed with exit code {result.returncode}")
+            
+            return result
+            
         except subprocess.TimeoutExpired:
             raise CommandTimeoutError(
                 f"Command timed out after {self.command_timeout} seconds"
             )
         except Exception as e:
             raise CommandExecutionError(f"Command execution failed: {str(e)}")
+
+    def __enter__(self):
+        """Context manager entry."""
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Context manager exit."""
+        pass

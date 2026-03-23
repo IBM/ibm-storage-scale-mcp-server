@@ -77,15 +77,15 @@ async def test_policy(
 
 
 @mcp.tool()
-async def apply_policy(
+async def update_policy(
     ctx: Context,
     filesystem: str,
     policy_contents: str,
     domain: Optional[str] = None,
 ) -> Any:
-    """Apply IBM Storage Scale policy to a filesystem.
+    """Update IBM Storage Scale policy for a filesystem.
     
-    Applies the policy changes to the specified filesystem.
+    Updates the policy configuration for the specified filesystem.
     Uses the Storage Scale API with test_only=false parameter.
 
     Args:
@@ -94,10 +94,10 @@ async def apply_policy(
         domain: Domain to be authorized against (default 'StorageScaleDomain')
 
     Returns:
-        Dictionary containing policy application results
+        Dictionary containing policy update results
     """
-    await ctx.info(f"Tool called: apply_policy with filesystem={filesystem}")
-    await ctx.debug(f"Applying policy for filesystem: {filesystem}")
+    await ctx.info(f"Tool called: update_policy with filesystem={filesystem}")
+    await ctx.debug(f"Updating policy for filesystem: {filesystem}")
 
     try:
         policy_data = {"policy_contents": policy_contents}
@@ -107,8 +107,8 @@ async def apply_policy(
             test_only=False,
             domain=domain
         )
-        await ctx.info(f"Policy for {filesystem} applied successfully")
+        await ctx.info(f"Policy for {filesystem} updated successfully")
         return result
     except Exception as e:
-        await ctx.error(f"Failed to apply policy for {filesystem}: {str(e)}")
+        await ctx.error(f"Failed to update policy for {filesystem}: {str(e)}")
         raise

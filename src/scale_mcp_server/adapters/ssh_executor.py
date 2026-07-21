@@ -5,6 +5,7 @@ This module provides remote command execution via SSH using paramiko.
 
 from typing import Optional, Any
 import logging
+import shlex
 import paramiko
 
 from .base import (
@@ -135,7 +136,10 @@ class SSHCommandExecutor(CommandExecutorInterface):
             Parameters like 'shell' and 'cwd' from local execution are not
             applicable to SSH execution and will be ignored if provided.
         """
-        command_str = ' '.join(command)
+        # Temporarily disabled: was ' '.join(command) which allowed shell
+        # metacharacters in any argument to inject additional commands.
+        # shlex.join quotes every token so /bin/sh treats them as literals.
+        command_str = shlex.join(command)
         
         try:
             # Connect if not already connected

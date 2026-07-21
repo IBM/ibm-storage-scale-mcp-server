@@ -44,55 +44,20 @@ if SSH_KEY_PATH:
 COMMAND_TIMEOUT = int(float(config.get('scale_api', {}).get('timeout', 5.0)))
 
 
-@mcp.tool()
+# TEMPORARILY DISABLED — HackerOne command injection report.
+# The filesystem argument was passed unsanitised into an SSH exec_command
+# string, allowing shell metacharacters to run arbitrary commands on the
+# cluster. The @mcp.tool() decorator is commented out so FastMCP does not
+# register this function — it cannot be called via tools/call at all.
+# Re-enable only after input validation and auth are reviewed and approved.
+
+# @mcp.tool()
 def apply_policy(filesystem: str) -> str:
     """Execute mmapplypolicy command to apply the ILM policy on a filesystem.
-    
-    This command applies the policy that was provided.
-    It extracts the policy from filesystem metadata and executes it.
-    
-    Args:
-        filesystem: The filesystem name (e.g., 'fs1')
 
-    Returns:
-        str: Command output and execution status
+    Temporarily disabled pending security review.
     """
-    try:
-        # Create SSH executor with configured timeout
-        executor = SSHCommandExecutor(
-            host=SSH_HOST,
-            username=SSH_USERNAME,
-            password=SSH_PASSWORD if not SSH_KEY_PATH else None,
-            key_filename=SSH_KEY_PATH,
-            port=SSH_PORT,
-            command_timeout=COMMAND_TIMEOUT
-        )
-        
-        # Execute mmapplypolicy directly without extracting policy to file
-        command = ["mmapplypolicy", filesystem, "-I", "yes"]
-        logger.info(f"Running policy on filesystem '{filesystem}'")
-        
-        # Execute via SSH using context manager
-        with executor:
-            result = executor.execute(command)
-        
-        # Return structured JSON response for agent consumption
-        response = {
-            "status": "success" if result.success else "failed",
-            "filesystem": filesystem,
-            "exit_code": result.returncode,
-            "output": clean_output(result.stdout),
-            "error": clean_output(result.stderr) if not result.success else None
-        }
-        
-        if not result.success:
-            raise CommandError(json.dumps(response))
-        
-        return json.dumps(response)
-            
-    except CommandError as e:
-        logger.error(f"Failed to execute policy: {str(e)}")
-        raise
-    except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
-        raise
+    raise NotImplementedError(
+        "apply_policy is temporarily disabled pending a security review. "
+        "See HackerOne report for details."
+    )

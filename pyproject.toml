@@ -9,6 +9,14 @@ dependencies = [
  "paramiko>=4.0.0",
 ]
 
+[tool.uv]
+constraint-dependencies = [
+  # CVE: Bleichenbacher oracle in PKCS#7 EnvelopedData decryption (fixed in 50.0.0)
+  "cryptography>=50.0.0",
+  # CVE: WebSocket Host/Origin bypass + HTTP session auth bypass (fixed in 1.28.1)
+  "mcp>=1.28.1",
+]
+
 [build-system]
 requires = ["uv_build>=0.10.0"]
 build-backend = "uv_build"

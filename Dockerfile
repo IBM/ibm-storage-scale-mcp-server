@@ -11,6 +11,7 @@ USER root
 
 # Install Node.js 22 and nsolid for filesystem operations support
 RUN curl -fsSL https://rpm.nodesource.com/setup_22.x | bash - && \
+    yum remove -y nodejs && \
     yum install -y nsolid && \
     yum clean all
 
